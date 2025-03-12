@@ -11,10 +11,10 @@ number_of_readings( [ _ | T ], Date ) -> number_of_readings(T, Date).
 sum([]) -> 0.0;
 sum([X | Xs]) -> X + sum(Xs).
 
-mean(Xs) -> sum(Xs) / length(Xs).
+mean(Xs) when is_list(Xs) -> sum(Xs) / length(Xs).
 
 all_measurments( [] ) -> [];
-all_measurments( [ {_, _, [Vs] } | T ] ) -> Vs ++ all_measurments(T).
+all_measurments( [ {_, _, Vs } | T ] ) -> Vs ++ all_measurments(T).
 
 filter_by_type( [], _ ) -> [];
 filter_by_type( [ {Type, V} | Xs], Type ) -> [V | filter_by_type(Xs, Type)];
