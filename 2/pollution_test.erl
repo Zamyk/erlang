@@ -215,3 +215,13 @@ get_min_and_max_test() ->
 
   ?assertMatch({10, 2000}, pollution:get_min_and_max("Stacja 1", "PM10",{2023,3,27}, M9)),
   ?assertMatch({3000, 3000}, pollution:get_min_and_max("Stacja 2", "PM10",{2023,3,28}, M9)).  
+
+
+get_min_and_max_fail_test() ->
+  M = pollution:add_station("Stacja 2", {2,2}, pollution:add_station("Stacja 1", {1,1}, pollution:create_monitor())),
+  ?assertMatch({error, _}, pollution:get_daily_mean("PM10",{2023,3,27}, M)),
+  M1 = pollution:add_value("Stacja 1", {{2023,3,27},{11,16,10}}, "PM10", 10, M),
+  M2 = pollution:add_value("Stacja 2", {{2023,3,27},{11,16,11}}, "PM10", 20, M1),
+
+  ?assertMatch({error, _}, pollution:get_min_and_max("Stacja 1", "PM25",{2023,3,27}, M2)),
+  ?assertMatch({error, _}, pollution:get_min_and_max("Stacja 7", "PM10",{2023,3,29}, M2)).
