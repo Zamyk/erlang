@@ -1,5 +1,5 @@
 -module(pollution).
--export([create_monitor/0, add_station/3, add_value/5, remove_value/4, get_one_value/4, get_station_mean/3, get_daily_mean/3]).
+-export([create_monitor/0, add_station/3, add_value/5, remove_value/4, get_one_value/4, get_station_mean/3, get_daily_mean/3, get_min_and_max/4]).
 -record(monitor, {stations = #{}, stations_coordinates = #{}, records = #{}}).
 -record(value_key, {station, time, type}).
 
@@ -98,5 +98,10 @@ get_daily_mean(Type, Date, #monitor{records = Records}) ->
     [] -> {error, "No records at this day!"}
   end.
 
-
-%get_one_value(Name, Time, Type, #monitor{stations = Stations, records = Records} = Monitor)
+get_min_and_max(Station, Type, Date, #monitor{records = Records}) ->
+  maybe
+    [_ | _] ?= Filtered = [ V || #value_key{time = {D, _}, type = T, station = S} := V <- Records, D == Date, T == Type, S == Station ],    
+    {lists:min(Filtered), lists:max(Filtered)}
+  else
+    [] -> {error, "No records at this day!"}
+  end.
